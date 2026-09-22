@@ -1,0 +1,21 @@
+# Arquivos compilados do Java
+bin/
+*.class
+
+# IDEs e Editores
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+
+# Arquivos de log e temporários
+*.log
+*.tmp
+hs_err_pid*
+
+# Sistema Operacional
+Thumbs.db
+Desktop.ini
+.DS_Store
