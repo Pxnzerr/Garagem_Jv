@@ -126,7 +126,7 @@ public abstract class Veiculo {
 
     @Override
     public int hashCode() {
-        return Objects.hash(placa);
+        return Objects.hashCode(placa);
     }
 
     @Override

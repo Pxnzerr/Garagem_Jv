@@ -7,7 +7,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -15,7 +17,8 @@ import java.util.Optional;
  */
 public class Garagem {
 
-    private final List<Veiculo> veiculos;
+    private final Map<String, Veiculo> veiculosPorPlaca;
+    private int veiculosEstacionados;
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
     /**
@@ -55,11 +58,12 @@ public class Garagem {
     }
 
     public Garagem() {
-        this.veiculos = new ArrayList<>();
+        this.veiculosPorPlaca = new LinkedHashMap<>();
+        this.veiculosEstacionados = 0;
     }
 
     /**
-     * Adiciona um novo veículo ao sistema da garagem.
+     * Adiciona um novo veículo ao sistema da garagem em O(1).
      * Não permite placas duplicadas.
      *
      * @param veiculo instância de Veiculo (Carro, Moto ou Caminhão)
@@ -69,30 +73,32 @@ public class Garagem {
         if (veiculo == null) {
             throw new IllegalArgumentException("Veículo não pode ser nulo.");
         }
-        if (buscarPorPlaca(veiculo.getPlaca()).isPresent()) {
+        String placaFormatada = veiculo.getPlaca().toUpperCase();
+        if (veiculosPorPlaca.containsKey(placaFormatada)) {
             return false;
         }
-        return veiculos.add(veiculo);
+        veiculosPorPlaca.put(placaFormatada, veiculo);
+        if (veiculo.estaEstacionado()) {
+            veiculosEstacionados++;
+        }
+        return true;
     }
 
     /**
-     * Retorna a lista imutável de veículos cadastrados.
+     * Retorna a lista imutável de veículos cadastrados em ordem de cadastro.
      */
     public List<Veiculo> listarVeiculos() {
-        return Collections.unmodifiableList(veiculos);
+        return Collections.unmodifiableList(new ArrayList<>(veiculosPorPlaca.values()));
     }
 
     /**
-     * Busca um veículo cadastrado pela placa (ignora maiúsculas/minúsculas).
+     * Busca um veículo cadastrado pela placa em O(1) (ignora maiúsculas/minúsculas).
      */
     public Optional<Veiculo> buscarPorPlaca(String placa) {
         if (placa == null) {
             return Optional.empty();
         }
-        String placaFormatada = placa.trim().toUpperCase();
-        return veiculos.stream()
-                .filter(v -> v.getPlaca().equalsIgnoreCase(placaFormatada))
-                .findFirst();
+        return Optional.ofNullable(veiculosPorPlaca.get(placa.trim().toUpperCase()));
     }
 
     /**
@@ -115,6 +121,7 @@ public class Garagem {
             throw new IllegalStateException("O veículo com a placa " + placa + " já está estacionado na garagem.");
         }
         v.registrarEntrada(horarioEntrada);
+        veiculosEstacionados++;
         return true;
     }
 
@@ -154,37 +161,42 @@ public class Garagem {
 
         // Desocupa a vaga
         v.registrarSaida();
+        veiculosEstacionados--;
 
         return new ReciboSaida(v, entrada, horarioSaida, minutos, horasCobradas, valorTotal);
     }
 
     /**
-     * Remove um veículo do cadastro da garagem.
+     * Remove um veículo do cadastro da garagem em O(1).
      * Não permite remoção se o veículo estiver estacionado no momento.
      */
     public boolean removerVeiculo(String placa) {
-        Optional<Veiculo> opt = buscarPorPlaca(placa);
-        if (opt.isEmpty()) {
+        if (placa == null) {
             return false;
         }
-        Veiculo v = opt.get();
+        String placaFormatada = placa.trim().toUpperCase();
+        Veiculo v = veiculosPorPlaca.get(placaFormatada);
+        if (v == null) {
+            return false;
+        }
         if (v.estaEstacionado()) {
             throw new IllegalStateException("Não é possível remover o veículo " + placa + " pois ele está atualmente estacionado.");
         }
-        return veiculos.remove(v);
+        veiculosPorPlaca.remove(placaFormatada);
+        return true;
     }
 
     /**
-     * Retorna a quantidade total de veículos cadastrados.
+     * Retorna a quantidade total de veículos cadastrados em O(1).
      */
     public int contarTotalVeiculos() {
-        return veiculos.size();
+        return veiculosPorPlaca.size();
     }
 
     /**
-     * Retorna a quantidade de veículos atualmente estacionados na garagem.
+     * Retorna a quantidade de veículos atualmente estacionados na garagem em O(1).
      */
     public int contarVeiculosEstacionados() {
-        return (int) veiculos.stream().filter(Veiculo::estaEstacionado).count();
+        return veiculosEstacionados;
     }
 }

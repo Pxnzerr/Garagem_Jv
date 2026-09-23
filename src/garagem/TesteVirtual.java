@@ -34,6 +34,9 @@ public class TesteVirtual {
         totalTestes++;
         if (testarContagemVeiculos()) testesPassados++;
 
+        totalTestes++;
+        if (testarDesempenhoGrandeVolume()) testesPassados++;
+
         System.out.println("\n============================================================");
         System.out.printf("RESULTADO FINAL: %d de %d testes passaram com sucesso!\n", testesPassados, totalTestes);
         System.out.println("============================================================");
@@ -175,6 +178,40 @@ public class TesteVirtual {
             return true;
         } else {
             System.out.println("FALHOU");
+            return false;
+        }
+    }
+
+    private static boolean testarDesempenhoGrandeVolume() {
+        System.out.print("[TESTE 7] Desempenho em grande volume (10.000 operações em O(1))... ");
+        Garagem g = new Garagem();
+        long inicio = System.currentTimeMillis();
+
+        for (int i = 0; i < 10000; i++) {
+            g.adicionarVeiculo(new Carro("PLK" + i, "Marca" + i, "Modelo" + i, 2020, TipoCombustivel.GASOLINA, 4));
+        }
+
+        g.registrarEntrada("PLK5000");
+        g.registrarEntrada("PLK9999");
+
+        Optional<Veiculo> vMeio = g.buscarPorPlaca("plk5000");
+        Optional<Veiculo> vFim = g.buscarPorPlaca("plk9999");
+        int total = g.contarTotalVeiculos();
+        int estacionados = g.contarVeiculosEstacionados();
+
+        long duracaoMs = System.currentTimeMillis() - inicio;
+
+        boolean ok = vMeio.isPresent()
+                  && vFim.isPresent()
+                  && total == 10000
+                  && estacionados == 2
+                  && duracaoMs < 500;
+
+        if (ok) {
+            System.out.printf("PASSOU (10.000 veículos cadastrados/buscados em %d ms)\n", duracaoMs);
+            return true;
+        } else {
+            System.out.printf("FALHOU (Duração: %d ms)\n", duracaoMs);
             return false;
         }
     }

@@ -273,6 +273,6 @@ public class Main {
         garagem.adicionarVeiculo(caminhaoExemplo);
 
         // Deixa o carro pré-estacionado há 2 horas para demonstrar a saída
-        carroExemplo.registrarEntrada(LocalDateTime.now().minusHours(2).minusMinutes(15));
+        garagem.registrarEntrada("ABC1D23", LocalDateTime.now().minusHours(2).minusMinutes(15));
     }
 }
