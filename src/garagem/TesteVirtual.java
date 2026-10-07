@@ -4,6 +4,7 @@ import garagem.model.*;
 import garagem.service.Garagem;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -36,6 +37,9 @@ public class TesteVirtual {
 
         totalTestes++;
         if (testarDesempenhoGrandeVolume()) testesPassados++;
+
+        totalTestes++;
+        if (testarReceitaTotalEListagemEstacionados()) testesPassados++;
 
         System.out.println("\n============================================================");
         System.out.printf("RESULTADO FINAL: %d de %d testes passaram com sucesso!\n", testesPassados, totalTestes);
@@ -212,6 +216,40 @@ public class TesteVirtual {
             return true;
         } else {
             System.out.printf("FALHOU (Duração: %d ms)\n", duracaoMs);
+            return false;
+        }
+    }
+
+    private static boolean testarReceitaTotalEListagemEstacionados() {
+        System.out.print("[TESTE 8] Rastreamento de receita acumulada e lista de estacionados... ");
+        Garagem g = new Garagem();
+        Veiculo c = new Carro("REC1111", "Fiat", "Pulse", 2023, TipoCombustivel.GASOLINA, 4);
+        Veiculo m = new Moto("REC2222", "Honda", "Biz", 2022, TipoCombustivel.GASOLINA, 125);
+        g.adicionarVeiculo(c);
+        g.adicionarVeiculo(m);
+
+        LocalDateTime agora = LocalDateTime.now();
+        g.registrarEntrada("REC1111", agora.minusHours(3));
+        g.registrarEntrada("REC2222", agora.minusHours(2));
+
+        List<Veiculo> estacionadosAntes = g.listarVeiculosEstacionados();
+        Garagem.ReciboSaida r1 = g.registrarSaida("REC1111", agora);
+        Garagem.ReciboSaida r2 = g.registrarSaida("REC2222", agora);
+
+        List<Veiculo> estacionadosDepois = g.listarVeiculosEstacionados();
+        double receitaEsperada = 30.00 + 10.00;
+
+        boolean ok = (estacionadosAntes.size() == 2)
+                  && (estacionadosDepois.isEmpty())
+                  && (r1.valorTotal() == 30.00)
+                  && (r2.valorTotal() == 10.00)
+                  && (g.getReceitaTotalAcumulada() == receitaEsperada);
+
+        if (ok) {
+            System.out.println("PASSOU (Receita acumulada: R$ 40,00)");
+            return true;
+        } else {
+            System.out.println("FALHOU");
             return false;
         }
     }

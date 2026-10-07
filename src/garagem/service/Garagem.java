@@ -19,6 +19,7 @@ public class Garagem {
 
     private final Map<String, Veiculo> veiculosPorPlaca;
     private int veiculosEstacionados;
+    private double receitaTotalAcumulada;
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
     /**
@@ -60,6 +61,7 @@ public class Garagem {
     public Garagem() {
         this.veiculosPorPlaca = new LinkedHashMap<>();
         this.veiculosEstacionados = 0;
+        this.receitaTotalAcumulada = 0.0;
     }
 
     /**
@@ -89,6 +91,15 @@ public class Garagem {
      */
     public List<Veiculo> listarVeiculos() {
         return Collections.unmodifiableList(new ArrayList<>(veiculosPorPlaca.values()));
+    }
+
+    /**
+     * Retorna a lista dos veículos atualmente estacionados na garagem em ordem de cadastro.
+     */
+    public List<Veiculo> listarVeiculosEstacionados() {
+        return veiculosPorPlaca.values().stream()
+                .filter(Veiculo::estaEstacionado)
+                .toList();
     }
 
     /**
@@ -158,6 +169,7 @@ public class Garagem {
 
         // Invocação polimórfica: cada subclasse (Carro, Moto, Caminhao) calcula sua tarifa
         double valorTotal = v.calcularTarifa(horasCobradas);
+        this.receitaTotalAcumulada += valorTotal;
 
         // Desocupa a vaga
         v.registrarSaida();
@@ -198,5 +210,12 @@ public class Garagem {
      */
     public int contarVeiculosEstacionados() {
         return veiculosEstacionados;
+    }
+
+    /**
+     * Retorna o valor total acumulado arrecadado com as tarifas de saída da garagem.
+     */
+    public double getReceitaTotalAcumulada() {
+        return receitaTotalAcumulada;
     }
 }

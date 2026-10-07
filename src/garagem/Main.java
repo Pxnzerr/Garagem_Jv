@@ -207,15 +207,17 @@ public class Main {
 
     // 7. Exibir a quantidade de veículos na garagem
     private static void exibirQuantidadeVeiculos() {
-        System.out.println("--- [7] QUANTIDADE DE VEÍCULOS ---");
+        System.out.println("--- [7] QUANTIDADE DE VEÍCULOS E FATURAMENTO ---");
         int total = garagem.contarTotalVeiculos();
         int estacionados = garagem.contarVeiculosEstacionados();
         int fora = total - estacionados;
+        double receita = garagem.getReceitaTotalAcumulada();
 
         System.out.println("---------------------------------------------");
         System.out.printf(" Total cadastrado no sistema:   %d veículo(s)\n", total);
         System.out.printf(" Atualmente na garagem:         %d veículo(s)\n", estacionados);
         System.out.printf(" Fora da garagem no momento:    %d veículo(s)\n", fora);
+        System.out.printf(" Receita total arrecadada:      R$ %.2f\n", receita);
         System.out.println("---------------------------------------------");
     }
 

@@ -29,7 +29,7 @@ Projeto simples, organizado e funcional de gerenciamento de garagem em Java, des
 4. **Registrar entrada de um veículo** (horário atual ou simulação retroativa de horas para testes).
 5. **Registrar saída de um veículo** (calcula o tempo decorrido, valor da tarifa polimórfica e emite recibo).
 6. **Remover um veículo** (com proteção que impede a remoção de veículos que estejam estacionados no momento).
-7. **Exibir a quantidade de veículos na garagem** (total cadastrados vs. atualmente na garagem).
+7. **Exibir a quantidade de veículos na garagem** (total cadastrados, atualmente estacionados, fora da garagem e receita total acumulada).
 8. **Encerrar o programa**.
 
 ---
