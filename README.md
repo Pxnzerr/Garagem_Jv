@@ -34,20 +34,37 @@ Projeto simples, organizado e funcional de gerenciamento de garagem em Java, des
 
 ---
 
-## 🚀 Como Compilar e Executar
+## 🚀 Como Executar
 
-### 1. Compilar o projeto
-No terminal (PowerShell ou Bash), execute:
-```powershell
-javac -encoding UTF-8 -d bin src/garagem/model/*.java src/garagem/service/*.java src/garagem/*.java
+### Opção 1: Scripts rápidos (Recomendado)
+
+**No Windows:**
+```cmd
+run.bat       # Compila e inicia o sistema interativo
+test.bat      # Compila e roda os testes automatizados
 ```
 
-### 2. Executar o sistema interativo
-```powershell
-java -cp bin garagem.Main
+**No Linux / macOS:**
+```bash
+chmod +x run.sh test.sh
+./run.sh      # Compila e inicia o sistema interativo
+./test.sh     # Compila e roda os testes automatizados
 ```
 
-### 3. Executar os testes automatizados
-```powershell
-java -cp bin garagem.TesteVirtual
-```
+### Opção 2: Compilação Manual
+
+1. **Compilar:**
+   ```powershell
+   javac -encoding UTF-8 -d bin src/garagem/model/*.java src/garagem/service/*.java src/garagem/*.java
+   ```
+
+2. **Executar aplicação:**
+   ```powershell
+   java -cp bin garagem.Main
+   ```
+
+3. **Executar testes:**
+   ```powershell
+   java -cp bin garagem.TesteVirtual
+   ```
+
